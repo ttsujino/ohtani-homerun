@@ -8,9 +8,12 @@ data['月日'] = data['date'].dt.strftime('%m-%d')
 
 st.title('大谷のホームラン数の推移')
 
-selected_all_years = st.multiselect('年度を選択してください', sorted(data['date'].dt.year.unique()))
+selected_all_years = st.multiselect(
+    '年度を選択してください', sorted(data['date'].dt.year.unique())
+)
 
 data['year'] = data['date'].dt.year
+data['count'] = data.groupby('year')["num"].cumsum()
 pivot_data = data.pivot(index='月日', columns="year", values='count')
 
 if selected_all_years:
