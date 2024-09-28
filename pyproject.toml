@@ -10,6 +10,7 @@ packages = [{include = "ohtani_homerun"}]
 python = "^3.10"
 streamlit = "^1.35.0"
 pandas = "^2.2.2"
+matplotlib = "^3.9.2"
 
 
 [build-system]
