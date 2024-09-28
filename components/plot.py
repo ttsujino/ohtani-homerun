@@ -34,7 +34,6 @@ def plot_monthly_homeruns(data: pd.DataFrame, selected_years: list):
     ax.set_xticklabels(data.index)
     ax.set_xlabel('Month')
     ax.set_ylabel('Num of Homerun')
-    ax.set_title('Monthly Num of Homerun')
     ax.legend(title='Year', loc='upper right')
     st.pyplot(fig)
 
