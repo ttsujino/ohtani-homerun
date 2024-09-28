@@ -1,23 +1,24 @@
 import streamlit as st
 import pandas as pd
 
-data = pd.read_csv("data/homerun.csv")
-
-data['date'] = pd.to_datetime(data['date'])
-data['月日'] = data['date'].dt.strftime('%m-%d')
-
-st.title('大谷のホームラン数の推移')
-
-selected_all_years = st.multiselect(
-    '年度を選択してください', sorted(data['date'].dt.year.unique())
+from components.data_loader import load_data
+from components.layout import show_sidebar
+from components.plot import (
+    plot_homerun_trends,
+    plot_monthly_homeruns,
+    show_monthly_homerun_table
 )
 
-data['year'] = data['date'].dt.year
-data['count'] = data.groupby('year')["num"].cumsum()
-pivot_data = data.pivot(index='月日', columns="year", values='count')
+data: pd.DataFrame = load_data("data/homerun.csv")
+pivot_data: pd.DataFrame = data.pivot(index='月日', columns="year", values='count')
+selected_years = show_sidebar(data)
 
-if selected_all_years:
-    year_data = pivot_data[selected_all_years]
-    st.line_chart(year_data)
-else:
-    st.write('何も選択されていません。')
+st.title('大谷選手のホームラン数')
+
+st.header('ホームラン数の推移')
+plot_homerun_trends(data, selected_years)
+
+st.header('月ごとのホームラン数')
+all_years_monthly_data = data[data['year'].isin(selected_years)].groupby(['year', 'month'])['num'].sum().unstack(0)
+plot_monthly_homeruns(all_years_monthly_data, selected_years)
+show_monthly_homerun_table(all_years_monthly_data)
